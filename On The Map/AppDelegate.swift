@@ -9,28 +9,49 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    // MARK: Properties
 
+    var window: UIWindow?
 
+    // MARK: App Life Cycle
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+      
+        if let loginController = window?.rootViewController as? LoginViewController {
+            loginController.udacityClient = UdacityAPIClient()
+        }
         return true
     }
-
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-
-
 }
 
+extension UIApplication {
+
+    // MARK: Imperatives
+
+    /// Opens the browser using the passed url text as an address or search.
+    /// - Parameter addressText: The address or search to be accessed by the browser.
+    func openDefaultBrowser(accessingAddress addressText: String) {
+        var addressText = addressText
+
+        // If the address text is not a valid address, embed it in a google search.
+        let componentsSplitted = addressText.split(separator: ".")
+        if componentsSplitted.count == 1 {
+            addressText = "https://www.google.com/search?q=\(componentsSplitted.first!)"
+        }
+
+        guard var addressURL = URL(string: addressText),
+            var components = URLComponents(url: addressURL, resolvingAgainstBaseURL: true) else {
+            assertionFailure("Couldn't mount the url.")
+            return
+        }
+
+        if components.scheme == nil {
+            components.scheme = "https"
+            addressURL = components.url!
+        }
+
+        if UIApplication.shared.canOpenURL(addressURL) {
+            UIApplication.shared.open(addressURL, options: [:], completionHandler: nil)
+        }
+    }
+}
