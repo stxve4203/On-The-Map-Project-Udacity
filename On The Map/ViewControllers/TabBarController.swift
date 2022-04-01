@@ -16,7 +16,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     var loggedUser: User!
     var loggedUserStudentInformation: StudentInformation?
     var locationManager: CLLocationManager!
-    
+    var parseAPIClient = ParseAPIClient()
 
 
     // MARK: Imperatives
@@ -70,6 +70,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
             DispatchQueue.main.async {
                 sender?.isEnabled = true
                 self.displayStudentLocations(locations)
+                self.parseAPIClient.sortLocations()
+
             }
         }
 
@@ -98,7 +100,7 @@ There was an error while downloading the students' locations, please, contact th
                             // Include the fetched information into the other locations and sort them.
                             self.loggedUserStudentInformation = information
                             self.parseClient.studentLocations.append(information)
-                            self.parseClient.sortLocations()
+                            self.parseAPIClient.sortLocations()
                         }
 
                         showFetchedLocationsOnMainThread(self.parseClient.studentLocations)
@@ -120,7 +122,7 @@ There was an error while downloading the students' locations, please, contact th
             }
 
             DispatchQueue.main.async {
-                self.performSegue(withIdentifier: "logOut", sender: self)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
@@ -131,9 +133,11 @@ There was an error while downloading the students' locations, please, contact th
                     assertionFailure("Couldn't get the controllers.")
                     return
                 }
+            tableViewController.displayLocation()
             mapController.displayLocations()
         }
     
+
 
     
     // MARK: Notifications
@@ -149,7 +153,7 @@ There was an error while downloading the students' locations, please, contact th
             $0.userKey == createdInformation.userKey && $0.objectID == createdInformation.objectID
         }
         parseClient.studentLocations.append(createdInformation)
-        parseClient.sortLocations()
+        parseAPIClient.sortLocations()
 
         displayStudentLocations(parseClient.studentLocations)
 }

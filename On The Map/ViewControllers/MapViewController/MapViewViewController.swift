@@ -75,7 +75,7 @@ extension MapViewViewController: MKMapViewDelegate {
 
         annotationView.canShowCallout = true
         annotationView.displayPriority = .required
-
+        annotationView.rightCalloutAccessoryView = UIButton(type: UIButton.ButtonType.detailDisclosure)
         return annotationView
     }
 
@@ -89,7 +89,17 @@ extension MapViewViewController: MKMapViewDelegate {
             return
         }
     }
-
+    
+    func open(urlToOpen url: URL) {
+         UIApplication.shared.open(url, options: [:], completionHandler: nil)
+     }
+    // Tap on pin delegate
+     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+         if control == view.rightCalloutAccessoryView {
+             let url = URL(string: ((view.annotation?.subtitle) ?? "")!)!
+             open(urlToOpen: url)
+         }
+     }
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         if let recognizer = view.gestureRecognizers?.filter({ $0 is AnnotationLinkTapRecognizer }).first {
             view.removeGestureRecognizer(recognizer)

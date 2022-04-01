@@ -15,6 +15,8 @@ class AddLocationViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var websiteTextField: UITextField!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     @IBOutlet weak var findButton: UIButton!
     
     //MARK: Variables
@@ -61,7 +63,7 @@ class AddLocationViewController: UIViewController, UITextFieldDelegate {
             let websiteText = websiteTextField.text, !websiteText.isEmpty else {
             return
         }
-
+        self.activityIndicator.startAnimating()
         let mapSearchRequest = MKLocalSearch.Request()
         mapSearchRequest.naturalLanguageQuery = locationText
         if let userLocation = userLocation {
@@ -82,9 +84,9 @@ class AddLocationViewController: UIViewController, UITextFieldDelegate {
             guard error == nil, let response = response, !response.mapItems.isEmpty else {
                 // Display error
                 self.displayError(.lackingData, withMessage: "Couldn´t find the entered location.")
+                self.activityIndicator.stopAnimating()
                 return
             }
-
             self.searchedPlacemark = response.mapItems.first!.placemark
             self.performSegue(withIdentifier: "ShowLocationOnMap", sender: self)
         }

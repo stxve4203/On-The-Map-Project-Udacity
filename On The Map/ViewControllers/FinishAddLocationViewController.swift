@@ -74,6 +74,7 @@ class FinishAddLocationViewController: UIViewController {
         let completionHandler: (StudentInformation?, APIClient.RequestError?) -> Void = { information, error in
             guard error == nil, let information = information else {
                 // Display error
+                Alert.showFailedToPost(on: self)
                 return
             }
             

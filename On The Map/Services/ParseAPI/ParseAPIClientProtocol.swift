@@ -38,7 +38,4 @@ protocol ParseAPIClientProtocol {
         _ information: StudentInformation,
         withCompletionHandler handler: @escaping (StudentInformation?, APIClient.RequestError?) -> Void
     )
-
-    // Sorts the locations by the updated at property.
-    func sortLocations()
 }

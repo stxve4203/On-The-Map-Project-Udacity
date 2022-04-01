@@ -43,7 +43,7 @@ class ParseAPIClient: APIClient, ParseAPIClientProtocol {
         andUsingCompletionHandler handler: @escaping ([StudentInformation]?, APIClient.RequestError?) -> Void
         ) {
         let fetchUrl = baseURL.appendingPathComponent(Methods.StudentLocation)
-        let parameters = [ParameterKeys.Limit: String(limit), ParameterKeys.Page: String(pagesToSkip * limit)]
+            let parameters = [ParameterKeys.Limit: String(limit), ParameterKeys.Page: String(pagesToSkip * limit), "order" : "-updatedAt"]
         _ = getConfiguredTaskForGET(withAbsolutePath: fetchUrl.absoluteString, parameters: parameters) { json, error in
             guard error == nil else {
                 handler(nil, error!)
